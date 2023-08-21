@@ -1,0 +1,15 @@
+[flake8]
+exclude = 
+	config/settings.py,
+	users/migrations/*,
+	telegram_conn/migrations/*,
+	habits/migrations/*
+extend-ignore =
+	; E501,
+	; W505,
+	F401,
+	W293
+max-line-length = 79
+inline-quotes = single
+multiline-quotes = single
+docstring-quotes = """
