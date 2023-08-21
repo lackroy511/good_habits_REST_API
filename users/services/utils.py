@@ -1,11 +1,13 @@
 
 import os
-from users.models import User
-from users.services.token_handler import TokenHandler
+
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
 from django.urls import reverse_lazy
 from rest_framework.response import Response
-from django.core.mail import send_mail
+
+from users.models import User
+from users.services.token_handler import TokenHandler
 
 
 def activate_user(email: str) -> None:
