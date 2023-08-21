@@ -68,5 +68,3 @@ class Habit(models.Model):
     
     def __str__(self):
         return f'{self.deed} {self.time} {self.periodicity}'
-    
-    
