@@ -9,13 +9,13 @@ class Habit(models.Model):
         verbose_name = 'привычка'
         verbose_name_plural = 'привычки'
 
-    EVERY_DAY = 1
-    EVERY_TWO_DAYS = 2
-    EVERY_THREE_DAYS = 3
-    EVERY_FOUR_DAYS = 4
-    EVERY_FIVE_DAYS = 5
-    EVERY_SIX_DAYS = 6
-    EVERY_SEVEN_DAYS = 7
+    EVERY_DAY = '1'
+    EVERY_TWO_DAYS = '2'
+    EVERY_THREE_DAYS = '3'
+    EVERY_FOUR_DAYS = '4'
+    EVERY_FIVE_DAYS = '5'
+    EVERY_SIX_DAYS = '6'
+    EVERY_SEVEN_DAYS = '7'
 
     PERIODICITY_CHOICES = (
         (EVERY_DAY, 'каждый день'),
@@ -40,7 +40,7 @@ class Habit(models.Model):
         max_length=50, choices=PERIODICITY_CHOICES,
     )
     deed = models.CharField(
-        max_length=150, verbose_name='действие привычки',
+        max_length=150, verbose_name='привычка',
     )
     reward = models.CharField(
         max_length=150, verbose_name='вознаграждение', null=True, blank=True,
@@ -51,7 +51,7 @@ class Habit(models.Model):
     is_published = models.BooleanField(
         default=False, verbose_name='опубликовано',
     )
-    connected_enjoyable_habit = models.OneToOneField(
+    connected_enjoyable_habit = models.ForeignKey(
         'self',
         verbose_name='приятная привычка',
         related_name='enjoyable_habit',
@@ -65,5 +65,8 @@ class Habit(models.Model):
         related_name='habits',
         on_delete=models.CASCADE,
     )
+    
+    def __str__(self):
+        return f'{self.deed} {self.time} {self.periodicity}'
     
     
