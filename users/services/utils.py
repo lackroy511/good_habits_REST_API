@@ -2,7 +2,6 @@
 import os
 
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import send_mail
 from django.urls import reverse_lazy
 from rest_framework.response import Response
 
@@ -24,13 +23,3 @@ def form_activation_url(self, response: Response) -> str:
     link = reverse_lazy('users:activate', kwargs={'token': token})
 
     return f'{current_site}{link}'
-
-
-def send_activation_email(url: str, email: str) -> None:
-
-    send_mail(
-        subject='Account Activation',
-        message=f'To activate your account, follow the link {url}',
-        from_email=os.getenv('EMAIL_HOST_USER'),
-        recipient_list=[email],
-    )
