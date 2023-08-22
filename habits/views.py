@@ -1,13 +1,9 @@
 from django.shortcuts import render
+from rest_framework import generics, viewsets
 
-from rest_framework import viewsets
 from habits.models import Habit
-
-from rest_framework import generics
 from habits.pagination import MyPagination
-
 from habits.serializers import HabitCreateSerializer, HabitGetSerializer
-
 
 # Create your views here.
 

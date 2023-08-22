@@ -1,10 +1,10 @@
+from django.core import mail
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APITestCase
+
 from habits.models import Habit
 from users.models import User
-from django.core import mail
-
 from users.services.token_handler import TokenHandler
 
 
