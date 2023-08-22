@@ -18,7 +18,7 @@ class HabitViewSet(viewsets.ModelViewSet):
     pagination_class = MyPagination
     
     def get_queryset(self):
-        return Habit.objects.filter(user=self.request.user)
+        return Habit.objects.filter(user=self.request.user).order_by('user')
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -33,4 +33,4 @@ class HabitViewSet(viewsets.ModelViewSet):
 
 class PublicHabitListAPIView(generics.ListAPIView):
     serializer_class = HabitGetSerializer
-    queryset = Habit.objects.filter(is_published=True)
+    queryset = Habit.objects.filter(is_published=True).order_by('user')

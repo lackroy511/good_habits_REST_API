@@ -21,7 +21,7 @@ class UserCreateAPIView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
 
         response = super().create(request, *args, **kwargs)
-        response.data['massage'] = \
+        response.data['message'] = \
             'A link has been sent to your email to activate your account.'
 
         url = form_activation_url(self, response)

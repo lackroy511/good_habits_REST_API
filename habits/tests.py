@@ -7,7 +7,7 @@ from users.models import User
 # Create your tests here.
 
 
-class HabitsPositiveTestCase(APITestCase):
+class HabitsTestCase(APITestCase):
 
     def setUp(self):
 
@@ -43,6 +43,16 @@ class HabitsPositiveTestCase(APITestCase):
             periodicity='1',
             deed='спать',
             user=self.user,
+        )
+        
+        self.another_habit = Habit.objects.create(
+            time='14:00:00',
+            duration_in_seconds=75,
+            place='дома',
+            periodicity='1',
+            deed='спать',
+            is_published=True,
+            user=self.second_user,
         )
 
         self.url = '/v1/habits/'
@@ -147,6 +157,19 @@ class HabitsPositiveTestCase(APITestCase):
             response['results'][1]['user'],
             self.user.pk,
         )
+        
+    def test_get_public_list(self):
+        
+        self.client.force_authenticate(user=self.user)
+        
+        response = self.client.get(path=f'{self.url}public/')
+
+        self.assertEqual(
+            response.status_code, status.HTTP_200_OK,
+        )
+        response = response.json()
+        
+        self.assertNotEqual(response[0]['user'], self.user.pk)
         
     def test_get_detail(self):
         
