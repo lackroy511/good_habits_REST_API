@@ -9,7 +9,7 @@ from habits.models import Habit
 class HabitAdmin(admin.ModelAdmin):
     fields = (
         'time',
-        'lead_time_in_seconds',
+        'duration_in_seconds',
         'place',
         'periodicity',
         'deed',

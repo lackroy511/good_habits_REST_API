@@ -30,7 +30,7 @@ class Habit(models.Model):
     time = models.TimeField(
         auto_now=False, auto_now_add=False, verbose_name='время выполнения',
     )
-    lead_time_in_seconds = models.PositiveIntegerField(
+    duration_in_seconds = models.PositiveIntegerField(
         verbose_name='время на выполнения в секундах',
     )
     place = models.CharField(
