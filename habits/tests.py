@@ -1,6 +1,7 @@
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APITestCase
+
 from habits.models import Habit
 from users.models import User
 
@@ -16,7 +17,7 @@ class HabitsTestCase(APITestCase):
         )
         self.user.set_password('test')
         self.user.save()
-        
+
         self.second_user = User.objects.create(
             email='second_test@test.com',
         )
@@ -35,7 +36,7 @@ class HabitsTestCase(APITestCase):
             connected_enjoyable_habit=None,
             user=self.user,
         )
-        
+
         self.second_habit = Habit.objects.create(
             time='14:00:00',
             duration_in_seconds=75,
@@ -44,7 +45,7 @@ class HabitsTestCase(APITestCase):
             deed='спать',
             user=self.user,
         )
-        
+
         self.another_habit = Habit.objects.create(
             time='14:00:00',
             duration_in_seconds=75,
@@ -52,17 +53,49 @@ class HabitsTestCase(APITestCase):
             periodicity='1',
             deed='спать',
             is_published=True,
+            is_enjoyable_habit=True,
             user=self.second_user,
         )
 
         self.url = '/v1/habits/'
-        
+
         self.data = {
             'time': '12:17:00',
             'duration_in_seconds': 20,
             'place': 'дома',
             'periodicity': '4',
             'deed': 'спать',
+        }
+
+        self.data_with_reward_and_enjoyable_habit = {
+            'time': '12:17:00',
+            'duration_in_seconds': 20,
+            'place': 'дома',
+            'periodicity': '4',
+            'deed': 'спать',
+            'reward': 'поспать',
+            'connected_enjoyable_habit': self.another_habit.pk,
+        }
+
+        self.data_with_wrong_enjoyable_habit = {
+            'time': '12:17:00',
+            'duration_in_seconds': 20,
+            'place': 'дома',
+            'periodicity': '4',
+            'deed': 'спать',
+            'reward': 'поспать',
+            'connected_enjoyable_habit': self.habit.pk,
+        }
+        
+        self.data_is_enjoyable_habit = {
+            'time': '12:17:00',
+            'duration_in_seconds': 20,
+            'place': 'дома',
+            'periodicity': '4',
+            'deed': 'спать',
+            'reward': 'поспать',
+            'is_enjoyable_habit': True,
+            'connected_enjoyable_habit': self.habit.pk,
         }
 
     def test_get_list(self):
@@ -116,7 +149,7 @@ class HabitsTestCase(APITestCase):
             response['results'][0]['user'],
             self.user.pk,
         )
-        
+
         self.assertEqual(
             response['results'][1]['time'],
             self.second_habit.time,
@@ -157,32 +190,32 @@ class HabitsTestCase(APITestCase):
             response['results'][1]['user'],
             self.user.pk,
         )
-        
+
     def test_get_public_list(self):
-        
+
         self.client.force_authenticate(user=self.user)
-        
+
         response = self.client.get(path=f'{self.url}public/')
 
         self.assertEqual(
             response.status_code, status.HTTP_200_OK,
         )
         response = response.json()
-        
+
         self.assertNotEqual(response[0]['user'], self.user.pk)
-        
+
     def test_get_detail(self):
-        
+
         self.client.force_authenticate(user=self.user)
-        
+
         pk = Habit.objects.all()[0].pk
-        
+
         response = self.client.get(path=f'{self.url}{pk}/')
         self.assertEqual(
             response.status_code, status.HTTP_200_OK,
         )
         response = response.json()
-        
+
         self.assertEqual(
             response['time'],
             self.habit.time,
@@ -223,9 +256,9 @@ class HabitsTestCase(APITestCase):
             response['user'],
             self.user.pk,
         )
-        
+
     def test_post_create(self):
-        
+
         self.client.force_authenticate(user=self.user)
 
         response = self.client.post(path=self.url, data=self.data)
@@ -234,7 +267,7 @@ class HabitsTestCase(APITestCase):
             response.status_code, status.HTTP_201_CREATED,
         )
         response = response.json()
-          
+
         self.assertEqual(
             response['time'], self.data['time'],
         )
@@ -264,19 +297,19 @@ class HabitsTestCase(APITestCase):
         )
 
     def test_put_update(self):
-        
+
         self.client.force_authenticate(user=self.user)
-        
+
         pk = Habit.objects.all()[0].pk
-        
+
         self.data['user'] = self.user.pk
-        
+
         response = self.client.put(path=f'{self.url}{pk}/', data=self.data)
         self.assertEqual(
             response.status_code, status.HTTP_200_OK,
         )
         response = response.json()
-        
+
         self.assertEqual(
             response['time'], self.data['time'],
         )
@@ -307,32 +340,32 @@ class HabitsTestCase(APITestCase):
         self.assertEqual(
             response['user'], self.user.pk,
         )
-        
+
     def test_patch_update(self):
-        
+
         self.client.force_authenticate(user=self.user)
-        
+
         pk = Habit.objects.all()[0].pk
-        
+
         data = {'time': '12:33:56'}
-        
+
         response = self.client.patch(path=f'{self.url}{pk}/', data=data)
         self.assertEqual(
             response.status_code, status.HTTP_200_OK,
         )
         response = response.json()
-        
+
         self.assertEqual(
             response['time'], data['time'],
         )
-        
+
     def test_delete(self):
-        
+
         self.client.force_authenticate(user=self.user)
-        
+
         pk = Habit.objects.all()[0].pk
         habits_count = Habit.objects.all().count()
-        
+
         response = self.client.delete(path=f'{self.url}{pk}/')
         self.assertEqual(
             response.status_code, status.HTTP_204_NO_CONTENT,
@@ -342,95 +375,144 @@ class HabitsTestCase(APITestCase):
         )
 
     def test_anonym_user_cant_create(self):
-        
+
         response = self.client.post(path=self.url, data=self.data)
 
         self.assertEqual(
             response.status_code, status.HTTP_401_UNAUTHORIZED,
         )
-    
+
     def test_anonym_user_cant_get(self):
-        
+
         pk = Habit.objects.all()[0].pk
         response = self.client.get(path=f'{self.url}{pk}/')
 
         self.assertEqual(
             response.status_code, status.HTTP_401_UNAUTHORIZED,
         )
-    
+
     def test_anonym_user_cant_get_list(self):
-        
+
         response = self.client.get(path=self.url)
 
         self.assertEqual(
             response.status_code, status.HTTP_401_UNAUTHORIZED,
         )
-    
+
     def test_anonym_user_cant_update(self):
-        
+
         pk = Habit.objects.all()[0].pk
-        
+
         response = self.client.put(path=f'{self.url}{pk}/', data=self.data)
-        
+
         self.assertEqual(
             response.status_code, status.HTTP_401_UNAUTHORIZED,
         )
-        
+
         response = self.client.patch(path=f'{self.url}{pk}/', data=self.data)
 
         self.assertEqual(
             response.status_code, status.HTTP_401_UNAUTHORIZED,
         )
-    
+
     def test_anonym_user_cant_delete(self):
-        
+
         pk = Habit.objects.all()[0].pk
-        
+
         response = self.client.patch(path=f'{self.url}{pk}/', data=self.data)
 
         self.assertEqual(
             response.status_code, status.HTTP_401_UNAUTHORIZED,
         )
-        
+
     def test_other_user_cant_get(self):
-        
+
         self.client.force_authenticate(user=self.second_user)
-        
+
         pk = Habit.objects.all()[0].pk
         response = self.client.get(path=f'{self.url}{pk}/')
 
         self.assertEqual(
             response.status_code, status.HTTP_404_NOT_FOUND,
         )
-    
+
     def test_other_user_cant_update(self):
-        
+
         self.client.force_authenticate(user=self.second_user)
-        
+
         pk = Habit.objects.all()[0].pk
-        
+
         response = self.client.put(path=f'{self.url}{pk}/', data=self.data)
-        
+
         self.assertEqual(
             response.status_code, status.HTTP_404_NOT_FOUND,
         )
-        
+
         response = self.client.patch(path=f'{self.url}{pk}/', data=self.data)
 
         self.assertEqual(
             response.status_code, status.HTTP_404_NOT_FOUND,
         )
-    
+
     def test_other_user_cant_delete(self):
-        
+
         self.client.force_authenticate(user=self.second_user)
-        
+
         pk = Habit.objects.all()[0].pk
-        
+
         response = self.client.patch(path=f'{self.url}{pk}/', data=self.data)
 
         self.assertEqual(
             response.status_code, status.HTTP_404_NOT_FOUND,
         )
+
+    def test_post_only_reward_or_enjoyable_habit(self):
+
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            path=self.url, data=self.data_with_reward_and_enjoyable_habit,
+        )
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST,
+        )
+
+    def test_duration_less_120_sec(self):
+
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            path=self.url, data=self.data_with_reward_and_enjoyable_habit,
+        )
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST,
+        )
+
+    def test_connected_enjoyable_habit_must_be_enjoyable_habit(self):
+
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            path=self.url, data=self.data_with_wrong_enjoyable_habit,
+        )
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST,
+        )
         
-    
+    def test_is_enjoyable_habit(self):
+        """
+        У приятной привычки не может быть вознаграждения или связанной
+        привычки.
+        """
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            path=self.url, data=self.data_is_enjoyable_habit,
+        )
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST,
+        )

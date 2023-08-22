@@ -9,8 +9,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from users.models import User
 from users.serializers import MyTokenObtainPairSerializer, UserCreateSerializer
 from users.services.token_handler import TokenHandler
-from users.services.utils import (activate_user,
-                                  form_activation_url,
+from users.services.utils import (activate_user, form_activation_url,
                                   send_activation_email)
 
 
