@@ -20,16 +20,3 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['email'] = user.email
 
         return token
-
-    def validate(self, attrs):
-        
-        data = super().validate(attrs)
-        
-        print(data)
-        
-        # if not user.is_active:
-        #     raise serializers.ValidationError(
-        #         'Your account is not verified by email',
-        #     )
-        
-        return data
