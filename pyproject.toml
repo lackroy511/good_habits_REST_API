@@ -18,6 +18,7 @@ coverage = "^7.3.0"
 celery = "^5.3.1"
 redis = "^5.0.0"
 django-celery-beat = "^2.5.0"
+requests = "^2.31.0"
 
 
 [tool.poetry.group.dev.dependencies]

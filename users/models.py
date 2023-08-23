@@ -20,6 +20,9 @@ class User(AbstractUser):
     is_active = models.BooleanField(
         default=False, verbose_name='пользователь активен',
     )
+    tg_chat_id = models.PositiveIntegerField(
+        verbose_name='id телеграм чата', null=True, blank=True,
+    )
     
     def __str__(self) -> str:
         return f'{self.email}'

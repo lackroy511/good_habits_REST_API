@@ -1,0 +1,28 @@
+{
+    "ok": true,
+    "result": [
+        {
+            "update_id": 487824030,
+            "message": {
+                "message_id": 26,
+                "from": {
+                    "id": 522914404,
+                    "is_bot": false,
+                    "first_name": "\u0420\u043e\u043c\u0430\u043d",
+                    "last_name": "iddqd",
+                    "username": "lackroy511",
+                    "language_code": "ru"
+                },
+                "chat": {
+                    "id": 522914404,
+                    "first_name": "\u0420\u043e\u043c\u0430\u043d",
+                    "last_name": "iddqd",
+                    "username": "lackroy511",
+                    "type": "private"
+                },
+                "date": 1692789705,
+                "text": "qwe"
+            }
+        }
+    ]
+}
