@@ -1,11 +1,9 @@
 from rest_framework import serializers
 
 from habits.models import Habit
-from habits.validators import (
-    ConnectedEnjoyableHabitIsEnjoyableHabit,
-    DurationChecker,
-    IsEnjoyableHabit,
-    OnlyConnectedEnjoyableHabitOrReward)
+from habits.validators import (ConnectedEnjoyableHabitIsEnjoyableHabit,
+                               DurationChecker, IsEnjoyableHabit,
+                               OnlyConnectedEnjoyableHabitOrReward)
 
 
 class HabitGetSerializer(serializers.ModelSerializer):

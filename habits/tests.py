@@ -86,7 +86,7 @@ class HabitsTestCase(APITestCase):
             'reward': 'поспать',
             'connected_enjoyable_habit': self.habit.pk,
         }
-        
+
         self.data_is_enjoyable_habit = {
             'time': '12:17:00',
             'duration_in_seconds': 20,
@@ -96,6 +96,14 @@ class HabitsTestCase(APITestCase):
             'reward': 'поспать',
             'is_enjoyable_habit': True,
             'connected_enjoyable_habit': self.habit.pk,
+        }
+
+        self.data_duration_less = {
+            'time': '12:17:00',
+            'duration_in_seconds': 121,
+            'place': 'дома',
+            'periodicity': '4',
+            'deed': 'спать',
         }
 
     def test_get_list(self):
@@ -478,12 +486,24 @@ class HabitsTestCase(APITestCase):
             response.status_code, status.HTTP_400_BAD_REQUEST,
         )
 
-    def test_duration_less_120_sec(self):
+    def test_duration_not_less_120_sec(self):
 
         self.client.force_authenticate(user=self.user)
 
         response = self.client.post(
             path=self.url, data=self.data_with_reward_and_enjoyable_habit,
+        )
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST,
+        )
+
+    def test_duration_less(self):
+
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            path=self.url, data=self.data_duration_less,
         )
 
         self.assertEqual(
@@ -501,7 +521,7 @@ class HabitsTestCase(APITestCase):
         self.assertEqual(
             response.status_code, status.HTTP_400_BAD_REQUEST,
         )
-        
+
     def test_is_enjoyable_habit(self):
         """
         У приятной привычки не может быть вознаграждения или связанной

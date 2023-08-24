@@ -9,8 +9,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from users.models import User
 from users.serializers import MyTokenObtainPairSerializer, UserCreateSerializer
 from users.services.token_handler import TokenHandler
-from users.services.utils import (activate_user, form_activation_url,
-                                  send_activation_email)
+from users.services.utils import activate_user, form_activation_url
+from users.tasks import send_activation_email
 
 
 class UserCreateAPIView(generics.CreateAPIView):
@@ -24,7 +24,7 @@ class UserCreateAPIView(generics.CreateAPIView):
             'A link has been sent to your email to activate your account.'
 
         url = form_activation_url(self, response)
-        send_activation_email(url, response.data.get('email'))
+        send_activation_email.delay(url, response.data.get('email'))
 
         return response
 
