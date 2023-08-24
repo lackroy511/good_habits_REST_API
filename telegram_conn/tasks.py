@@ -1,21 +1,18 @@
-import json
-import os
-import re
 
-import requests
+import json
 from celery import shared_task
 
-from telegram_conn.models import ConnectedChats, ProcessedMessage
+from telegram_conn.models import ProcessedMessage
 from telegram_conn.services.tg_api import TelegramAPI
-from telegram_conn.services.utils import (get_not_connected_users,
-                                          get_processed_result, get_result,
+from telegram_conn.services.utils import (get_processed_result, get_result,
                                           get_users_data_with_send_answer,
                                           make_connection)
-from users.models import User
+from time import time
+import ast
 
 
 @shared_task
-def connect_user_to_telegram():
+def handle_incoming_messages():
     """Easy telegram massages handler"""
     response = TelegramAPI.get_updates()
     messages_data = response.json()
@@ -36,3 +33,20 @@ def connect_user_to_telegram():
         )
         
         make_connection(users_data)
+
+
+@shared_task
+def clean_old_massages() -> None:
+    queryset = ProcessedMessage.objects.all()
+    
+    for message in queryset:
+        message_data = message.message_data
+        message_data = eval(message_data)
+        
+        timestamp = message_data.get('message').get('date')
+        
+        # TelegramAPI.send_message(message_dict, 522914404)
+        
+        if int(time()) - timestamp > 120000:
+            message.delete()
+            

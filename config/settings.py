@@ -170,9 +170,15 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 CELERY_BEAT_SCHEDULE = {
-    'task-name': {
-        'task': 'telegram_conn.tasks.connect_user_to_telegram',  # Путь к задаче
-        'schedule': timedelta(seconds=6),  # Расписание выполнения задачи
+    'handle_messages': {
+        'task': 'telegram_conn.tasks.handle_incoming_messages',  # Путь к задаче
+        'schedule': timedelta(seconds=5
+                              ),  # Расписание выполнения задачи
+        # (например, каждые 10 минут)
+    },
+    'clean_massages': {
+        'task': 'telegram_conn.tasks.clean_old_massages',  # Путь к задаче
+        'schedule': timedelta(hours=1),  # Расписание выполнения задачи
         # (например, каждые 10 минут)
     },
 }
