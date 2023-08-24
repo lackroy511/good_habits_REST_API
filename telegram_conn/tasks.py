@@ -3,10 +3,8 @@ import json
 from celery import shared_task
 
 from telegram_conn.models import ProcessedMessage
-from telegram_conn.services.tg_api import TelegramAPI
-from telegram_conn.services.utils import (get_processed_result, get_result,
-                                          get_users_data_with_send_answer,
-                                          make_connection)
+from telegram_conn.services.tg_api import MessagesHandler, TelegramAPI
+
 from time import time
 import ast
 
@@ -17,14 +15,15 @@ def handle_incoming_messages():
     response = TelegramAPI.get_updates()
     messages_data = response.json()
     
-    result = get_result(messages_data)
-    processed_result = get_processed_result()
+    result = MessagesHandler.get_result(messages_data)
+    processed_result = MessagesHandler.get_processed_result()
     result = result - processed_result
     
     if result:
-        users_data, processed_messages = get_users_data_with_send_answer(
-            result,
-        )
+        users_data, processed_messages = \
+            MessagesHandler.get_users_data_with_send_answer(
+                result,
+            )
 
         ProcessedMessage.objects.bulk_create(
             objs=processed_messages,
@@ -32,7 +31,7 @@ def handle_incoming_messages():
             ignore_conflicts=True,
         )
         
-        make_connection(users_data)
+        MessagesHandler.make_connection(users_data)
 
 
 @shared_task
