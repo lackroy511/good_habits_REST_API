@@ -1,12 +1,11 @@
 
 import json
+from time import time
+
 from celery import shared_task
 
 from telegram_conn.models import ProcessedMessage
 from telegram_conn.services.tg_api import MessagesHandler, TelegramAPI
-
-from time import time
-import ast
 
 
 @shared_task
@@ -48,4 +47,3 @@ def clean_old_massages() -> None:
         
         if int(time()) - timestamp > 120000:
             message.delete()
-            

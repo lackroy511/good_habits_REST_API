@@ -1,6 +1,7 @@
 from django.contrib import admin
+from django_celery_beat.models import PeriodicTask
 
-from habits.models import Habit
+from habits.models import Habit, ReminderTask
 
 # Register your models here.
 
@@ -19,3 +20,16 @@ class HabitAdmin(admin.ModelAdmin):
         'connected_enjoyable_habit',
         'user',
     )
+
+
+@admin.register(ReminderTask)
+class ReminderTaskAdmin(admin.ModelAdmin):
+    fields = (
+        'task',
+        'crontab',
+        'args',
+        'kwargs',
+    )
+
+
+admin.register(PeriodicTask)

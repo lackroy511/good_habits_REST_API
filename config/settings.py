@@ -172,7 +172,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_BEAT_SCHEDULE = {
     'handle_messages': {
         'task': 'telegram_conn.tasks.handle_incoming_messages',  # Путь к задаче
-        'schedule': timedelta(seconds=5
+        'schedule': timedelta(seconds=20
                               ),  # Расписание выполнения задачи
         # (например, каждые 10 минут)
     },
@@ -182,3 +182,4 @@ CELERY_BEAT_SCHEDULE = {
         # (например, каждые 10 минут)
     },
 }
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

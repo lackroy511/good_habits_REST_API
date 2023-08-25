@@ -1,4 +1,5 @@
 from django.db import models
+from django_celery_beat.models import PeriodicTask
 
 # Create your models here.
 
@@ -68,3 +69,14 @@ class Habit(models.Model):
     
     def __str__(self):
         return f'{self.deed} {self.time} {self.periodicity}'
+
+
+class ReminderTask(PeriodicTask):
+    
+    class Meta:
+        verbose_name = 'напоминание'
+        verbose_name_plural = 'напоминания'
+        
+    habit = models.OneToOneField(
+        'habits.Habit', verbose_name='привычка', on_delete=models.CASCADE,
+    )
