@@ -1,6 +1,6 @@
 from celery import shared_task
-from habits.models import Habit
 
+from habits.models import Habit
 from telegram_conn.services.tg_api import TelegramAPI
 
 

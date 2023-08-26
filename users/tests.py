@@ -46,23 +46,6 @@ class UserTestCase(APITestCase):
             'A link has been sent to your email to activate your account.',
         )
 
-    # def test_send_activation_email(self):
-
-    #     self.client.post(
-    #         path=self.register_url, data=self.data,
-    #     )
-
-    #     self.assertEqual(len(mail.outbox), 1)
-
-    #     sent_email = mail.outbox[0]
-
-    #     self.assertEqual(sent_email.to, ['test_user@test.com'])
-    #     self.assertEqual(sent_email.subject, 'Account Activation')
-    #     self.assertIn(
-    #         'To activate your account, ' +
-    #         'follow the link testserver/v1/activate/', sent_email.body,
-    #     )
-
     def test_activate_user(self):
 
         response = self.client.get(path=self.activation_url)

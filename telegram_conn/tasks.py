@@ -14,23 +14,23 @@ def handle_incoming_messages():
     response = TelegramAPI.get_updates()
     messages_data = response.json()
     
-    result = MessagesHandler.get_result(messages_data)
-    processed_result = MessagesHandler.get_processed_result()
-    result = result - processed_result
+    result = MessagesHandler.get_set_of_new_messages(messages_data)
+    processed_result = MessagesHandler.get_set_of_processed_messages()
+    unprocessed_messages = result - processed_result
     
-    if result:
-        users_data, processed_messages = \
-            MessagesHandler.get_users_data_with_send_answer(
-                result,
+    if unprocessed_messages:
+        users_data, new_processed_messages = \
+            MessagesHandler.get_users_data_and_new_processed_messages(
+                unprocessed_messages,
             )
 
         ProcessedMessage.objects.bulk_create(
-            objs=processed_messages,
+            objs=new_processed_messages,
             batch_size=100,
             ignore_conflicts=True,
         )
         
-        MessagesHandler.make_connection(users_data)
+        MessagesHandler.connect_user_to_tg_bot(users_data)
 
 
 @shared_task

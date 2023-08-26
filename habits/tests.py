@@ -11,15 +11,25 @@ from users.models import User
 class HabitsTestCase(APITestCase):
 
     def setUp(self):
-
+        
+        self.url = '/v1/habits/'
+        
         self.user = User.objects.create(
             email='test@test.com',
+            tg_chat_id=123456,
         )
         self.user.set_password('test')
         self.user.save()
 
         self.second_user = User.objects.create(
             email='second_test@test.com',
+            tg_chat_id=123456,
+        )
+        self.second_user.set_password('test')
+        self.second_user.save()
+        
+        self.user_without_tg_chat_id = User.objects.create(
+            email='without_tg_chat_id@test.com',
         )
         self.second_user.set_password('test')
         self.second_user.save()
@@ -56,8 +66,6 @@ class HabitsTestCase(APITestCase):
             is_enjoyable_habit=True,
             user=self.second_user,
         )
-
-        self.url = '/v1/habits/'
 
         self.data = {
             'time': '12:17:00',
@@ -381,7 +389,16 @@ class HabitsTestCase(APITestCase):
         self.assertEqual(
             habits_count, Habit.objects.all().count() + 1,
         )
-
+        
+    def test_user_without_tg_chat_id_cant_post(self):
+        
+        self.client.force_authenticate(user=self.user_without_tg_chat_id)
+        
+        response = self.client.post(path=self.url, data=self.data)
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST,
+        )
+        
     def test_anonym_user_cant_create(self):
 
         response = self.client.post(path=self.url, data=self.data)

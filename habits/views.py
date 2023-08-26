@@ -1,12 +1,13 @@
-from celery.schedules import crontab
-from django.shortcuts import render
-from rest_framework import generics, viewsets
 
-from habits.models import Habit, ReminderTask
+from rest_framework import generics, viewsets
+from rest_framework import serializers
+
+from habits.models import Habit
 from habits.pagination import MyPagination
 from habits.serializers import HabitCreateSerializer, HabitGetSerializer
 from habits.services.celery_task_create import create_reminder_task
-from habits.services.utils import get_schedule
+from habits.services.utils import send_success_created_message
+from telegram_conn.services.tg_api import TelegramAPI
 
 # Create your views here.
 
@@ -24,9 +25,10 @@ class HabitViewSet(viewsets.ModelViewSet):
 
         if not habit.is_enjoyable_habit:
             create_reminder_task(habit)
+        
+        send_success_created_message(habit)
             
     def get_serializer_class(self):
-        
         if self.action == 'create':
             return HabitCreateSerializer
         
