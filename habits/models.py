@@ -1,6 +1,7 @@
+import os
 from django.db import models
 from django_celery_beat.models import PeriodicTask
-
+from rest_framework import serializers
 # Create your models here.
 
 
@@ -66,17 +67,30 @@ class Habit(models.Model):
         related_name='habits',
         on_delete=models.CASCADE,
     )
-    
+
     def __str__(self):
         return f'{self.deed} {self.time} {self.periodicity}'
 
+    def save(self, *args, **kwargs):
+
+        if not self.user.tg_chat_id:
+            raise serializers.ValidationError(
+                {
+                    'message': 'You must connect to our telegram' +
+                               'bot to create a new habit: ' +
+                               f'{os.getenv("TG_BOT_LINK")}',
+                },
+            )
+
+        super(Habit, self).save(*args, **kwargs)
+
 
 class ReminderTask(PeriodicTask):
-    
+
     class Meta:
         verbose_name = 'напоминание'
         verbose_name_plural = 'напоминания'
-        
+
     habit = models.OneToOneField(
         'habits.Habit', verbose_name='привычка', on_delete=models.CASCADE,
     )
