@@ -41,7 +41,8 @@ Using GET, POST, PUT, PATCH, DELETE, users can create habits in the database.
 - Habits cannot be scheduled less frequently than once every 7 days.
 - A user cannot create a habit until they connect a Telegram bot.
 
-After creating a habit, the user receives a notification in their Telegram chat about the created habit.
+After creating a habit, a celery task is created with for reminders.
+
+the user receives a notification in their Telegram chat about the created habit.
 
 Additionally, at the specified interval, the user receives a notification in their Telegram chat that it's time to perform the habit.
-```
