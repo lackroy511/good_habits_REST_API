@@ -78,7 +78,7 @@ class Habit(models.Model):
                 {
                     'message': 'You must connect to our telegram' +
                                'bot to create a new habit: ' +
-                               f'{os.getenv("TG_BOT_LINK")}',
+                               f'{os.getenv("TG_BOT_URL_LINK")}',
                 },
             )
 
