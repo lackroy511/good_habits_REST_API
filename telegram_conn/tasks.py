@@ -14,9 +14,9 @@ def handle_incoming_messages():
     response = TelegramAPI.get_updates()
     messages_data = response.json()
     
-    result = MessagesHandler.get_set_of_new_messages(messages_data)
-    processed_result = MessagesHandler.get_set_of_processed_messages()
-    unprocessed_messages = result - processed_result
+    new_messages = MessagesHandler.get_set_of_new_messages(messages_data)
+    processed_messages = MessagesHandler.get_set_of_processed_messages()
+    unprocessed_messages = new_messages - processed_messages
     
     if unprocessed_messages:
         users_data, new_processed_messages = \
