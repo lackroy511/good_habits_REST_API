@@ -176,8 +176,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_BEAT_SCHEDULE = {
     'handle_messages': {
         'task': 'telegram_conn.tasks.handle_incoming_messages',  # Путь к задаче
-        'schedule': timedelta(seconds=5
-                              ),  # Расписание выполнения задачи
+        'schedule': timedelta(seconds=5),  # Расписание выполнения задачи
         # (например, каждые 10 минут)
     },
     'clean_massages': {

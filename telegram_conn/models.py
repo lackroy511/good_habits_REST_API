@@ -9,7 +9,7 @@ class ProcessedMessage(models.Model):
         verbose_name = 'обработанное сообщение '
         verbose_name_plural = 'обработанные сообщения'
         
-    message_data = models.TextField(
+    message_data = models.JSONField(
         verbose_name='данные сообщения',
         unique=True,
         )

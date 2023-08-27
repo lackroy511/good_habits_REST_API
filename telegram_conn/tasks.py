@@ -3,6 +3,7 @@ import json
 from time import time
 
 from celery import shared_task
+from habits.models import Habit
 
 from telegram_conn.models import ProcessedMessage
 from telegram_conn.services.tg_api import MessagesHandler, TelegramAPI
@@ -39,7 +40,7 @@ def clean_old_massages() -> None:
     
     for message in queryset:
         message_data = message.message_data
-        message_data = eval(message_data)
+        message_data = json.loads(message_data)
         
         timestamp = message_data.get('message').get('date')
         
@@ -47,3 +48,13 @@ def clean_old_massages() -> None:
         
         if int(time()) - timestamp > 120000:
             message.delete()
+
+
+@shared_task
+def send_success_created_message(
+        deed: str, time: str, place: str, chat_id: str) -> None:
+    
+    text = f'''
+    Вы создали привычку:\n{deed} в {str(time)} {place}
+    '''
+    TelegramAPI.send_message(text, chat_id)

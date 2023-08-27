@@ -1,4 +1,5 @@
 
+import json
 import os
 import re
 
@@ -58,6 +59,7 @@ class MessagesHandler:
         if messages_data.get('ok'):
             result = messages_data.get('result')
 
+        result = map(json.dumps, result)
         result = map(str, result)
         return set(result)
 
@@ -84,7 +86,7 @@ class MessagesHandler:
 
         for message in unprocessed_messages:
 
-            message = eval(message)
+            message = json.loads(message)
 
             chat_member = message.get('my_chat_member')
             if chat_member:
@@ -98,7 +100,7 @@ class MessagesHandler:
 
             processed_messages.append(
                 ProcessedMessage(
-                    message_data=str(message),
+                    message_data=json.dumps(message),
                 ),
             )
 

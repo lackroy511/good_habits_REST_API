@@ -6,8 +6,7 @@ from habits.models import Habit
 from habits.pagination import MyPagination
 from habits.serializers import HabitCreateSerializer, HabitGetSerializer
 from habits.services.celery_task_create import create_reminder_task
-from habits.services.utils import send_success_created_message
-from telegram_conn.services.tg_api import TelegramAPI
+from telegram_conn.tasks import send_success_created_message
 
 # Create your views here.
 
@@ -26,7 +25,12 @@ class HabitViewSet(viewsets.ModelViewSet):
         if not habit.is_enjoyable_habit:
             create_reminder_task(habit)
         
-        send_success_created_message(habit)
+        deed = habit.deed
+        time = str(habit.time)
+        place = habit.place
+        chat_id = habit.user.tg_chat_id
+        
+        send_success_created_message.delay(deed, time, place, chat_id)
             
     def get_serializer_class(self):
         if self.action == 'create':

@@ -12,9 +12,9 @@ def get_schedule(periodicity: str, time: str) -> str:
     return f'{minutes} {hours} * * */{periodicity}'
 
 
-def send_success_created_message(habit: Habit) -> None:
+# def send_success_created_message(habit: Habit) -> None:
     
-    text = f'''
-    Вы создали привычку:\n{habit.deed} в {str(habit.time)} {habit.place}
-    '''
-    TelegramAPI.send_message(text, habit.user.tg_chat_id)
+#     text = f'''
+#     Вы создали привычку:\n{habit.deed} в {str(habit.time)} {habit.place}
+#     '''
+#     TelegramAPI.send_message(text, habit.user.tg_chat_id)
