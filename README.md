@@ -11,6 +11,7 @@ SPA application in which a user creates a habit they want to develop, specifying
 - Simple JWT
 - Unittest
 - Swagger (drf-yasg)
+- CORS
 - [Telegram API](https://core.telegram.org/bots/api)
 
 ## Installation and Running on Linux
@@ -23,7 +24,10 @@ SPA application in which a user creates a habit they want to develop, specifying
     - Activate the virtual environment: `poetry shell`
     - Apply migrations: `python manage.py migrate`
     - Create a superuser if needed: `python manage.py createsuperuser` Default login: `1`, password: `1`
-    - Start the server: `python manage.py runserver`
+    - Create three terminal sessions and execute in each of them:
+        - Start the server: `python manage.py runserver`
+        - Start the celery worker: `celery -A config worker --loglevel=info`
+        - Start the celery beat: `celery -A config beat --loglevel=info`
     - If the server is running locally, access the documentation at:
         - [http://127.0.0.1:8000/swagger/](http://127.0.0.1:8000/swagger/)
         - [http://127.0.0.1:8000/redoc/](http://127.0.0.1:8000/redoc/)
