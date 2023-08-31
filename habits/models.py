@@ -1,7 +1,9 @@
 import os
+
 from django.db import models
 from django_celery_beat.models import PeriodicTask
 from rest_framework import serializers
+
 # Create your models here.
 
 

@@ -1,6 +1,5 @@
 
-from rest_framework import generics, viewsets
-from rest_framework import serializers
+from rest_framework import generics, serializers, viewsets
 
 from habits.models import Habit
 from habits.pagination import MyPagination
