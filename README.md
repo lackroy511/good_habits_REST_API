@@ -16,6 +16,12 @@ SPA application in which a user creates a habit they want to develop, specifying
 
 ## Installation and Running on Linux
 
+***Running with docker***
+
+`sudo docker compose up --build`
+
+***Manual running***
+
 1. Install Redis if not already installed: `sudo apt-get install redis`
 2. Create a PostgreSQL database for the project.
 3. Create and configure the `.env` file in the project root based on the `.env.sample` template.
