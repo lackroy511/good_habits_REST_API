@@ -17,8 +17,8 @@ SPA application in which a user creates a habit they want to develop, specifying
 ## Installation and Running on Linux
 
 ***Running with docker***
-
-`sudo docker compose up --build`
+- Create and configure the .env file in the project root based on the .env.sample template.
+- `sudo docker compose up --build`
 
 ***Manual running***
 
